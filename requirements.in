@@ -1,0 +1,5 @@
+django>=2.1,<3.0
+django-environ
+ipython
+pip-tools
+psycopg2
