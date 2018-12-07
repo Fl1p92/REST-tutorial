@@ -1,5 +1,7 @@
 django>=2.1,<3.0
 django-environ
+djangorestframework
 ipython
 pip-tools
 psycopg2
+pygments

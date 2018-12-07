@@ -9,6 +9,7 @@ click==7.0                # via pip-tools
 decorator==4.3.0          # via ipython, traitlets
 django-environ==0.4.5
 django==2.1.4
+djangorestframework==3.9.0
 ipython-genutils==0.2.0   # via traitlets
 ipython==7.2.0
 jedi==0.13.1              # via ipython
@@ -19,7 +20,7 @@ pip-tools==3.1.0
 prompt-toolkit==2.0.7     # via ipython
 psycopg2==2.7.6.1
 ptyprocess==0.6.0         # via pexpect
-pygments==2.3.0           # via ipython
+pygments==2.3.0
 pytz==2018.7              # via django
 six==1.11.0               # via pip-tools, prompt-toolkit, traitlets
 traitlets==4.3.2          # via ipython
