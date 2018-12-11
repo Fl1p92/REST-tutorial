@@ -33,3 +33,31 @@ class Snippet(models.Model):
 
     class Meta:
         ordering = ('created',)
+
+
+class ContactsList(models.Model):
+    owner = models.OneToOneField('auth.User', related_name='contacts_list', on_delete=models.CASCADE)
+    users_in_contacts = models.ManyToManyField('auth.User', through='ContactLine', blank=True)
+
+
+class ContactLine(models.Model):
+    contacts_list = models.ForeignKey('ContactsList', on_delete=models.CASCADE, related_name='contact_lines')
+    contact = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+
+class Message(models.Model):
+    send_time = models.DateTimeField('Send time', auto_now_add=True)
+    message_text = models.TextField('Message text')
+    author = models.ForeignKey('auth.User', related_name='messages', on_delete=models.CASCADE)
+    chat_room = models.ForeignKey('ChatRoom', related_name='messages', on_delete=models.CASCADE)
+
+
+class ChatRoom(models.Model):
+    title = models.CharField(max_length=100, blank=True, default='New chat room')
+    users_in_chat = models.ManyToManyField('auth.User', blank=True)
+
+
+class ChatRoomUser(models.Model):
+    chat_room = models.ForeignKey('ChatRoom', on_delete=models.CASCADE, related_name='chat_room_users')
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    
