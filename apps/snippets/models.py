@@ -34,7 +34,9 @@ class Snippet(models.Model):
     class Meta:
         ordering = ('created',)
 
-
+########################################################################################################################
+######################################### New API ########################################################################
+########################################################################################################################
 class ContactsList(models.Model):
     owner = models.OneToOneField('auth.User', related_name='contacts_list', on_delete=models.CASCADE)
 
@@ -61,14 +63,54 @@ class Chat(models.Model):
 
 
 class ChatUser(models.Model):
-    chat_room = models.ForeignKey('Chat', on_delete=models.CASCADE, related_name='chat_users')
+    chat = models.ForeignKey('Chat', on_delete=models.CASCADE, related_name='chat_users')
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (
-            ("chat_room", "user"),
+            ("chat", "user"),
         )
-# 2 app: contact, chat.
+##########!!!!!!!! 2 app: contact, chat. !!!!!!############
 # 1) url для api.
+
+from django.urls import path
+
+from rest_framework.urlpatterns import format_suffix_patterns
+
+from . import views
+
+urlpatterns = format_suffix_patterns([
+    path('', views.api_root),
+    path('users/', views.UserList.as_view(), name='user-list'),
+    path('users/<int:pk>/', views.UserDetail.as_view(), name='user-detail'),
+    path('users/<int:pk>/contacts/', views.UserContacts.as_view(), name='user-contacts'),
+
+    path('chats/', views.ChatList.as_view(), name='chat-list'),
+    path('chats/<int:pk>/', views.ChatDetail.as_view(), name='chat-detail'),
+])
+
+
 # 2) api point для user:
 # - поиск всех кроме себя с пагинацией.
+
+from django.contrib.auth.models import User
+
+from rest_framework import generics
+from .serializers import UserSerializer
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            self.queryset = User.objects.exclude(username=self.request.user.username)
+        return super().get_queryset()
+
+# пагинация
+# В settings:
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
