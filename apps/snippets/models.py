@@ -103,9 +103,10 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
 
     def get_queryset(self):
+        queryset = super().get_queryset()
         if self.request.user.is_authenticated:
-            self.queryset = User.objects.exclude(username=self.request.user.username)
-        return super().get_queryset()
+            queryset = queryset.exclude(pk=self.request.user.pk)
+        return queryset
 
 # пагинация
 # В settings:
